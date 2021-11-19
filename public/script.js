@@ -57,11 +57,11 @@ function connectToNewUser(userId, stream) { // This runs when someone joins our 
         addVideoStream(video, userVideoStream, userId)
     })
     // If they leave, remove their video
-    call.on('close', () => {
-        video.remove()
-        console.log(`Видео ${userId} должно быть удалено`)
+    // call.on('close', () => {
+    //     video.remove()
+    //     console.log(`Видео ${userId} должно быть удалено`)
 
-    })
+    // })
 }
 
 
