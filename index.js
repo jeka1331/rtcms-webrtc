@@ -1,4 +1,4 @@
-const express = require('express')
+   const express = require('express')
 const { Socket } = require('socket.io')
 const app = express()
 const server = require('http').Server(app)
@@ -16,12 +16,16 @@ app.get('/:room', (req, res) => {
     res.render('room', {roomId: req.params.room})
 })
 
-io.on('connection', socket =>{
+io.on('connection', socket => {
     socket.on('join-room', (roomId, userId) => {
         socket.join(roomId)
-        socket.broadcast.emit('user-connected', userId)
-        console.log('Пользователь подключится')
+        socket.to(roomId).emit('user-connected', userId)
+        console.log(userId)
         
+        // socket.on("message", (message) => {
+        //     io.to(roomId).emit("createMessage", message, userId);
+        // });
+
         socket.on('disconnect', () => {
             socket.broadcast.emit('user-disconnected', userId)
         })

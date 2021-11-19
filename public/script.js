@@ -1,12 +1,26 @@
 const socket = io('/')
 const videoGrid = document.getElementById('video-grid')
-console.log(socket)
-
 const myPeer = new Peer()
-
-console.log(myPeer)
-
 const myVideo = document.createElement('video')
+const showChat = document.querySelector("#showChat");
+const backBtn = document.querySelector(".header__back");
+myVideo.muted = true;
+
+
+backBtn.addEventListener("click", () => {
+    document.querySelector(".main__left").style.display = "flex";
+    document.querySelector(".main__left").style.flex = "1";
+    document.querySelector(".main__right").style.display = "none";
+    document.querySelector(".header__back").style.display = "none";
+  });
+  
+  showChat.addEventListener("click", () => {
+    document.querySelector(".main__right").style.display = "flex";
+    document.querySelector(".main__right").style.flex = "1";
+    document.querySelector(".main__left").style.display = "none";
+    document.querySelector(".header__back").style.display = "block";
+  });
+  
 
 navigator.mediaDevices.getUserMedia({
     video: true,
@@ -17,6 +31,7 @@ navigator.mediaDevices.getUserMedia({
     myPeer.on('call', call => {
         call.answer(stream)
         const video = document.createElement('video')
+        video.id = "123";
         call.on('stream', userVideoStream => {
             addVideoStream(video, userVideoStream)
         })
@@ -39,17 +54,22 @@ function connectToNewUser(userId, stream) { // This runs when someone joins our 
     // Add their video
     const video = document.createElement('video') 
     call.on('stream', userVideoStream => {
-        addVideoStream(video, userVideoStream)
+        addVideoStream(video, userVideoStream, userId)
     })
     // If they leave, remove their video
     call.on('close', () => {
         video.remove()
+        console.log(`Видео ${userId} должно быть удалено`)
+
     })
 }
 
 
-function addVideoStream(video, stream) {
+function addVideoStream(video, stream, userId = "not-set") {
     video.srcObject = stream 
+    if (userId != "not-set") {
+        video.id = userId
+    }
     video.addEventListener('loadedmetadata', () => { // Play the video as it loads
         video.play()
     })
